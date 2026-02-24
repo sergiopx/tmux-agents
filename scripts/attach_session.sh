@@ -16,7 +16,7 @@ if [ -z "$SESSIONS_JSON" ]; then
 fi
 
 SESSION_NAMES=$(echo "$SESSIONS_JSON" \
-  | jq -r '.sessions[] | .key | sub("agent:main:"; "")' 2>/dev/null)
+  | jq -r '.sessions[] | .key | sub("agent:main:"; "") | select(test(":") | not)' 2>/dev/null)
 
 if [ -z "$SESSION_NAMES" ]; then
   tmux display-message "tmux-openclaw: no OpenClaw sessions found"

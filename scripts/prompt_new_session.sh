@@ -9,7 +9,7 @@ MODE="${1:-pane}"
 
 # Compute next available claw-N default
 NEXT=$(openclaw sessions --json 2>/dev/null \
-  | jq '[.sessions[].key | select(test("agent:main:claw-[0-9]+$"))] | length + 1' \
+  | jq '[.sessions[].key | sub("agent:main:"; "") | select(test(":") | not) | select(test("^claw-[0-9]+$"))] | length + 1' \
   2>/dev/null)
 [ -z "$NEXT" ] && NEXT=1
 DEFAULT="claw-$NEXT"
