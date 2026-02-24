@@ -2,7 +2,7 @@
 
 A [TPM](https://github.com/tmux-plugins/tpm) plugin for managing [OpenClaw](https://openclaw.ai) sessions directly from tmux.
 
-Open new panes or windows pre-loaded with an OpenClaw session. Attach to existing sessions with a fuzzy picker. All without leaving tmux.
+Open new panes or windows pre-loaded with an OpenClaw session. Attach to existing sessions with a fuzzy picker. One persistent dashboard that shows all your sessions at once.
 
 ## Keybindings
 
@@ -10,15 +10,36 @@ Open new panes or windows pre-loaded with an OpenClaw session. Attach to existin
 
 | Key | Action |
 |-----|--------|
-| `g` | Switch **current pane** to existing session (fzf picker) |
-| `n` | New OpenClaw session → open in **pane** (split) |
-| `N` | New OpenClaw session → open in **window** |
-| `a` | Attach existing session → open in **pane** |
-| `A` | Attach existing session → open in **window** |
-| `d` | **Dashboard** — all sessions in a **grid** layout (new window) |
-| `v` | **Dashboard** — all sessions **vertical** layout (new window) |
-| `h` | **Dashboard** — all sessions **horizontal** layout (new window) |
+| `g` | Switch **current pane** to existing session (fzf picker, respawn in-place) |
+| `n` | New session → prompt for name → open in **pane** (split) |
+| `N` | New session → prompt for name → open in **window** |
+| `a` | Attach existing session → fzf picker → open in **pane** |
+| `A` | Attach existing session → fzf picker → open in **window** |
+| `d` | **Dashboard** — switch to it (create if not exists) |
+| `D` | **Dashboard menu** — hide/show/refresh/relayout/kill |
 | `Esc` | Cancel |
+
+> **Tip:** While in the dashboard window, press `prefix + Space` to cycle through tmux's built-in layouts.
+
+## Dashboard
+
+`prefix g d` opens a persistent window (`claw:dash`) showing all your OpenClaw sessions in a tiled grid. Each pane runs a live `openclaw tui` session.
+
+The dashboard is **created once and reused** — pressing `prefix g d` again just switches to it.
+
+### Dashboard Menu (`prefix g D`)
+
+| Option | Key | Action |
+|--------|-----|--------|
+| Hide session | `h` | fzf pick a visible session → remove from dashboard |
+| Show hidden | `u` | fzf pick a hidden session → restore to dashboard |
+| Refresh | `r` | Sync panes: add new sessions, remove hidden/dead ones |
+| Layout: Grid | `1` | `tiled` layout |
+| Layout: Vertical | `2` | `even-vertical` layout |
+| Layout: Horizontal | `3` | `even-horizontal` layout |
+| Kill dashboard | `x` | Close the dashboard window |
+
+Hidden sessions are saved to `~/.config/tmux-openclaw/hidden` and persist across restarts.
 
 ## Install
 
@@ -47,25 +68,20 @@ git clone https://github.com/sergiopx/tmux-openclaw ~/.tmux/plugins/tmux-opencla
 
 ## Configuration
 
-All options go in `~/.tmux.conf`:
-
 ```tmux
-# Change trigger key from g to something else
+# Change trigger key (default: g)
 set -g @openclaw-trigger-key "g"
 
 # Pane split direction: h (horizontal, default) or v (vertical)
 set -g @openclaw-split-direction "h"
+
+# Dashboard default layout: tiled | even-vertical | even-horizontal
+set -g @openclaw-dashboard-layout "tiled"
+
+# Max panes in dashboard (0 = no limit)
+set -g @openclaw-dashboard-max "0"
 ```
 
-## How It Works
-
-- `n` / `N` — prompts for a session name (default: `claw-1`, `claw-2`, …), then opens `openclaw tui --session <name>` in a new pane or window. The pane title is set to match the session name.
-- `g` — fzf picker → **respawns the current pane** with the selected session (replaces whatever was running in-place).
-- `a` / `A` — fetches your OpenClaw sessions, presents them in an fzf popup (or `display-menu` fallback), and opens the selected session in a new pane or window.
-- `d` / `v` / `h` — opens **all user sessions** in a new window. Pane skeleton is created instantly, then all sessions load in parallel:
-  - `d` → `tiled` grid
-  - `v` → `even-vertical` (stacked top/bottom)
-  - `h` → `even-horizontal` (side by side)
 ## License
 
 MIT
