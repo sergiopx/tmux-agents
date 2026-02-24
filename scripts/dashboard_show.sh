@@ -3,18 +3,18 @@
 # dashboard_show.sh — fzf pick a hidden session → remove from hidden list
 
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-CONFIG_DIR="$HOME/.config/tmux-openclaw"
+CONFIG_DIR="$HOME/.config/tmux-agents"
 HIDDEN_FILE="$CONFIG_DIR/hidden"
 
 if [ ! -f "$HIDDEN_FILE" ] || [ ! -s "$HIDDEN_FILE" ]; then
-  tmux display-message "tmux-openclaw: no hidden sessions"
+  tmux display-message "tmux-agents: no hidden sessions"
   exit 0
 fi
 
-TMPFILE_DATA=$(mktemp /tmp/tmux-openclaw.XXXXXX)
+TMPFILE_DATA=$(mktemp /tmp/tmux-agents.XXXXXX)
 cat "$HIDDEN_FILE" > "$TMPFILE_DATA"
 
-TMPFILE_OUT=$(mktemp /tmp/tmux-openclaw.XXXXXX)
+TMPFILE_OUT=$(mktemp /tmp/tmux-agents.XXXXXX)
 tmux display-popup -E \
   "cat '$TMPFILE_DATA' | fzf --prompt='Show › ' --border --height=40% > '$TMPFILE_OUT'"
 

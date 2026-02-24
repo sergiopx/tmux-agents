@@ -1,4 +1,4 @@
-# tmux-openclaw
+# tmux-agents
 
 A [TPM](https://github.com/tmux-plugins/tpm) plugin for managing [OpenClaw](https://openclaw.ai) sessions directly from tmux.
 
@@ -39,7 +39,7 @@ The dashboard is **created once and reused** — pressing `prefix g d` again jus
 | Layout: Horizontal | `3` | `even-horizontal` layout |
 | Kill dashboard | `x` | Close the dashboard window |
 
-Hidden sessions are saved to `~/.config/tmux-openclaw/hidden` and persist across restarts.
+Hidden sessions are saved to `~/.config/tmux-agents/hidden` and persist across restarts.
 
 ## Install
 
@@ -48,7 +48,7 @@ Hidden sessions are saved to `~/.config/tmux-openclaw/hidden` and persist across
 Add to `~/.tmux.conf`:
 
 ```tmux
-set -g @plugin 'sergiopx/tmux-openclaw'
+set -g @plugin 'sergiopx/tmux-agents'
 ```
 
 Then press `prefix + I` to install.
@@ -56,8 +56,8 @@ Then press `prefix + I` to install.
 ### Manual
 
 ```bash
-git clone https://github.com/sergiopx/tmux-openclaw ~/.tmux/plugins/tmux-openclaw
-~/.tmux/plugins/tmux-openclaw/tmux-openclaw.tmux
+git clone https://github.com/sergiopx/tmux-agents ~/.tmux/plugins/tmux-agents
+~/.tmux/plugins/tmux-agents/tmux-agents.tmux
 ```
 
 ## Requirements

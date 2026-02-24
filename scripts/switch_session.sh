@@ -7,7 +7,7 @@
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 if command -v fzf >/dev/null 2>&1; then
-  TMPFILE=$(mktemp /tmp/tmux-openclaw.XXXXXX)
+  TMPFILE=$(mktemp /tmp/tmux-agents.XXXXXX)
   tmux display-popup -E \
     "bash '$SCRIPTS_DIR/get_sessions.sh' | fzf --prompt='Switch to › ' --border --height=40% > '$TMPFILE'"
   SELECTED=$(cat "$TMPFILE" 2>/dev/null | xargs)
@@ -16,7 +16,7 @@ else
   # Fallback: build menu from pre-fetched list
   SESSION_NAMES=$(bash "$SCRIPTS_DIR/get_sessions.sh")
   if [ -z "$SESSION_NAMES" ]; then
-    tmux display-message "tmux-openclaw: no OpenClaw sessions found"
+    tmux display-message "tmux-agents: no OpenClaw sessions found"
     exit 1
   fi
   MENU_ARGS=("-T" "#[fg=cyan]Switch Session")

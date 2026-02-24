@@ -9,7 +9,7 @@ DASH_WIN=$(tmux list-windows -F "#{window_id} #{@openclaw-dashboard}" 2>/dev/nul
   | awk '$2=="1" {print $1}' | head -1)
 
 if [ -z "$DASH_WIN" ]; then
-  tmux display-message "tmux-openclaw: no dashboard to refresh"
+  tmux display-message "tmux-agents: no dashboard to refresh"
   exit 1
 fi
 
@@ -52,4 +52,4 @@ LAYOUT=$(tmux show-option -wqv -t "$DASH_WIN" @openclaw-dashboard-layout 2>/dev/
 LAYOUT="${LAYOUT:-tiled}"
 tmux select-layout -t "$DASH_WIN" "$LAYOUT"
 
-tmux display-message "tmux-openclaw: dashboard refreshed"
+tmux display-message "tmux-agents: dashboard refreshed"

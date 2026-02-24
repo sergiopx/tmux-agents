@@ -18,7 +18,7 @@ mapfile -t SESSIONS < <(bash "$SCRIPTS_DIR/get_visible_sessions.sh")
 COUNT=${#SESSIONS[@]}
 
 if [ "$COUNT" -eq 0 ]; then
-  tmux display-message "tmux-openclaw: no sessions to display"
+  tmux display-message "tmux-agents: no sessions to display"
   exit 1
 fi
 

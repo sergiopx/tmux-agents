@@ -11,7 +11,7 @@ MODE="${2:-pane}"
 SESSION_NAME="$(echo "$SESSION_NAME" | xargs)"
 
 if [ -z "$SESSION_NAME" ]; then
-  tmux display-message "tmux-openclaw: session name cannot be empty"
+  tmux display-message "tmux-agents: session name cannot be empty"
   exit 1
 fi
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
-# tmux-openclaw — tmux plugin for OpenClaw session management
-# https://github.com/sergiopx/tmux-openclaw
+# tmux-agents — tmux plugin for OpenClaw session management
+# https://github.com/sergiopx/tmux-agents
 #
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
