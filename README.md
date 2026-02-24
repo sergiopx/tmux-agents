@@ -24,7 +24,7 @@ Open new panes or windows pre-loaded with an OpenClaw session. Attach to existin
 Add to `~/.tmux.conf`:
 
 ```tmux
-set -g @plugin 'spMachin/tmux-openclaw'
+set -g @plugin 'sergiopx/tmux-openclaw'
 ```
 
 Then press `prefix + I` to install.
@@ -32,7 +32,7 @@ Then press `prefix + I` to install.
 ### Manual
 
 ```bash
-git clone https://github.com/spMachin/tmux-openclaw ~/.tmux/plugins/tmux-openclaw
+git clone https://github.com/sergiopx/tmux-openclaw ~/.tmux/plugins/tmux-openclaw
 ~/.tmux/plugins/tmux-openclaw/tmux-openclaw.tmux
 ```
 
