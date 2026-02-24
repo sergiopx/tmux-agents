@@ -2,31 +2,23 @@
 #
 # switch_session.sh
 # Picks an existing OpenClaw session via fzf and respawns the CURRENT pane with it.
+# Popup opens immediately; openclaw fetch happens inside it (no pre-popup delay).
 
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-SESSIONS_JSON=$(openclaw sessions --json 2>/dev/null)
-if [ -z "$SESSIONS_JSON" ]; then
-  tmux display-message "tmux-openclaw: openclaw not found or not running"
-  exit 1
-fi
-
-SESSION_NAMES=$(echo "$SESSIONS_JSON" \
-  | jq -r '.sessions[] | .key | sub("agent:main:"; "") | select(test(":") | not)' 2>/dev/null)
-
-if [ -z "$SESSION_NAMES" ]; then
-  tmux display-message "tmux-openclaw: no OpenClaw sessions found"
-  exit 1
-fi
 
 if command -v fzf >/dev/null 2>&1; then
   TMPFILE=$(mktemp /tmp/tmux-openclaw.XXXXXX)
   tmux display-popup -E \
-    "echo $(printf '%q' "$SESSION_NAMES") | tr ' ' '\n' | fzf --prompt='Switch to › ' --height=40% --border > $(printf '%q' "$TMPFILE")"
+    "bash '$SCRIPTS_DIR/get_sessions.sh' | fzf --prompt='Switch to › ' --border --height=40% > '$TMPFILE'"
   SELECTED=$(cat "$TMPFILE" 2>/dev/null | xargs)
   rm -f "$TMPFILE"
 else
-  # Fallback: display-menu
+  # Fallback: build menu from pre-fetched list
+  SESSION_NAMES=$(bash "$SCRIPTS_DIR/get_sessions.sh")
+  if [ -z "$SESSION_NAMES" ]; then
+    tmux display-message "tmux-openclaw: no OpenClaw sessions found"
+    exit 1
+  fi
   MENU_ARGS=("-T" "#[fg=cyan]Switch Session")
   while IFS= read -r name; do
     [ -z "$name" ] && continue
@@ -37,7 +29,6 @@ else
 fi
 
 if [ -n "$SELECTED" ]; then
-  # Respawn current pane in-place with the selected session
   tmux respawn-pane -k "openclaw tui --session '$SELECTED'"
   tmux select-pane -T "$SELECTED"
 fi
