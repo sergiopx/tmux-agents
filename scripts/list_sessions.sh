@@ -13,8 +13,7 @@ if [ -z "$OUTPUT" ]; then
   exit 0
 fi
 
-# Write to tmpfile — avoids printf %q mangling tabs/newlines
 TMPFILE=$(mktemp /tmp/tmux-openclaw-list.XXXXXX)
 echo "$OUTPUT" | column -t -s $'\t' > "$TMPFILE"
 
-tmux display-popup -E -w 60 -h 20 "cat '$TMPFILE'; rm -f '$TMPFILE'; read -r -p 'Press Enter to close...'"
+tmux display-popup -E -w 60 -h 20 "less '$TMPFILE'; rm -f '$TMPFILE'"
