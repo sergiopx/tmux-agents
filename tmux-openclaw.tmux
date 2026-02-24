@@ -21,6 +21,7 @@ tmux bind-key -T prefix "$trigger_key" switch-client -T claw
 # A  →  attach existing session → picker → open in WINDOW
 # d  →  dashboard: all sessions in GRID layout (new window)
 # v  →  dashboard: all sessions VERTICAL layout (new window)
+# h  →  dashboard: all sessions HORIZONTAL layout (new window)
 
 tmux bind-key -T claw g run-shell "$CURRENT_DIR/scripts/switch_session.sh"
 tmux bind-key -T claw n run-shell "$CURRENT_DIR/scripts/prompt_new_session.sh pane"
@@ -29,6 +30,7 @@ tmux bind-key -T claw a run-shell "$CURRENT_DIR/scripts/attach_session.sh pane"
 tmux bind-key -T claw A run-shell "$CURRENT_DIR/scripts/attach_session.sh window"
 tmux bind-key -T claw d run-shell "$CURRENT_DIR/scripts/dashboard.sh grid"
 tmux bind-key -T claw v run-shell "$CURRENT_DIR/scripts/dashboard.sh vertical"
+tmux bind-key -T claw h run-shell "$CURRENT_DIR/scripts/dashboard.sh horizontal"
 
 # Escape [claw] table without doing anything
 tmux bind-key -T claw Escape switch-client -T root

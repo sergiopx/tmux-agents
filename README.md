@@ -17,6 +17,7 @@ Open new panes or windows pre-loaded with an OpenClaw session. Attach to existin
 | `A` | Attach existing session → open in **window** |
 | `d` | **Dashboard** — all sessions in a **grid** layout (new window) |
 | `v` | **Dashboard** — all sessions **vertical** layout (new window) |
+| `h` | **Dashboard** — all sessions **horizontal** layout (new window) |
 | `Esc` | Cancel |
 
 ## Install
@@ -61,7 +62,10 @@ set -g @openclaw-split-direction "h"
 - `n` / `N` — prompts for a session name (default: `claw-1`, `claw-2`, …), then opens `openclaw tui --session <name>` in a new pane or window. The pane title is set to match the session name.
 - `g` — fzf picker → **respawns the current pane** with the selected session (replaces whatever was running in-place).
 - `a` / `A` — fetches your OpenClaw sessions, presents them in an fzf popup (or `display-menu` fallback), and opens the selected session in a new pane or window.
-- `d` / `v` — opens **all user sessions** in a new window: `d` uses tmux's `tiled` (grid) layout, `v` uses `even-vertical` (stacked). tmux handles the geometry automatically.
+- `d` / `v` / `h` — opens **all user sessions** in a new window. Pane skeleton is created instantly, then all sessions load in parallel:
+  - `d` → `tiled` grid
+  - `v` → `even-vertical` (stacked top/bottom)
+  - `h` → `even-horizontal` (side by side)
 ## License
 
 MIT
