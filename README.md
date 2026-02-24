@@ -1,16 +1,18 @@
 # tmux-agents
 
-A [TPM](https://github.com/tmux-plugins/tpm) plugin for managing [OpenClaw](https://openclaw.ai) sessions directly from tmux.
+Manage your AI agent sessions in tmux — open, attach, switch, and dashboard.
 
-Open new panes or windows pre-loaded with an OpenClaw session. Attach to existing sessions with a fuzzy picker. One persistent dashboard that shows all your sessions at once.
+A [TPM](https://github.com/tmux-plugins/tpm) plugin for managing AI agent CLI sessions (OpenClaw, and more) directly from tmux. Open new panes or windows pre-loaded with a session, attach to existing ones with a fuzzy picker, and keep a persistent dashboard showing all your agents at once.
+
+<!-- GIF: dashboard -->
 
 ## Keybindings
 
-`prefix + g` enters the **[claw]** key table:
+`prefix + g` enters the **[agents]** key table:
 
 | Key | Action |
 |-----|--------|
-| `g` | Switch **current pane** to existing session (fzf picker, respawn in-place) |
+| `g` | Switch **current pane** to existing session (fzf, respawn in-place) |
 | `n` | New session → prompt for name → open in **pane** (split) |
 | `N` | New session → prompt for name → open in **window** |
 | `a` | Attach existing session → fzf picker → open in **pane** |
@@ -19,21 +21,21 @@ Open new panes or windows pre-loaded with an OpenClaw session. Attach to existin
 | `D` | **Dashboard menu** — hide/show/refresh/relayout/kill |
 | `Esc` | Cancel |
 
-> **Tip:** While in the dashboard window, press `prefix + Space` to cycle through tmux's built-in layouts.
+> **Tip:** While in the dashboard window, press `prefix + Space` to cycle tmux's built-in layouts.
 
 ## Dashboard
 
-`prefix g d` opens a persistent window (`claw:dash`) showing all your OpenClaw sessions in a tiled grid. Each pane runs a live `openclaw tui` session.
+`prefix g d` opens a persistent window (`agents:dash`) showing all your sessions in a tiled grid. Each pane runs a live agent session. Created once, reused forever — pressing `prefix g d` again just switches to it.
 
-The dashboard is **created once and reused** — pressing `prefix g d` again just switches to it.
+<!-- GIF: menu -->
 
 ### Dashboard Menu (`prefix g D`)
 
 | Option | Key | Action |
 |--------|-----|--------|
-| Hide session | `h` | fzf pick a visible session → remove from dashboard |
-| Show hidden | `u` | fzf pick a hidden session → restore to dashboard |
-| Refresh | `r` | Sync panes: add new sessions, remove hidden/dead ones |
+| Hide session | `h` | Remove a session from the dashboard |
+| Show hidden | `u` | Restore a hidden session |
+| Refresh | `r` | Sync panes — adds new sessions, removes hidden/dead ones |
 | Layout: Grid | `1` | `tiled` layout |
 | Layout: Vertical | `2` | `even-vertical` layout |
 | Layout: Horizontal | `3` | `even-horizontal` layout |
@@ -64,22 +66,15 @@ git clone https://github.com/sergiopx/tmux-agents ~/.tmux/plugins/tmux-agents
 
 - [OpenClaw](https://openclaw.ai) CLI (`openclaw`)
 - [`jq`](https://stedolan.github.io/jq/)
-- [`fzf`](https://github.com/junegunn/fzf) _(optional — falls back to `display-menu`)_
+- [`fzf`](https://github.com/junegunn/fzf) *(optional — falls back to `display-menu`)*
 
 ## Configuration
 
 ```tmux
-# Change trigger key (default: g)
-set -g @openclaw-trigger-key "g"
-
-# Pane split direction: h (horizontal, default) or v (vertical)
-set -g @openclaw-split-direction "h"
-
-# Dashboard default layout: tiled | even-vertical | even-horizontal
-set -g @openclaw-dashboard-layout "tiled"
-
-# Max panes in dashboard (0 = no limit)
-set -g @openclaw-dashboard-max "0"
+set -g @tmuxagents-trigger-key       "g"       # trigger key after prefix (default: g)
+set -g @tmuxagents-split-direction   "h"       # pane split direction: h or v
+set -g @tmuxagents-dashboard-layout  "tiled"   # tiled | even-vertical | even-horizontal
+set -g @tmuxagents-dashboard-max     "0"       # max panes in dashboard (0 = no limit)
 ```
 
 ## License

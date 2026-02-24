@@ -4,7 +4,7 @@
 
 LAYOUT="${1:-tiled}"
 
-DASH_WIN=$(tmux list-windows -F "#{window_id} #{@openclaw-dashboard}" 2>/dev/null \
+DASH_WIN=$(tmux list-windows -F "#{window_id} #{@tmuxagents-dashboard}" 2>/dev/null \
   | awk '$2=="1" {print $1}' | head -1)
 
 if [ -z "$DASH_WIN" ]; then
@@ -13,4 +13,4 @@ if [ -z "$DASH_WIN" ]; then
 fi
 
 tmux select-layout -t "$DASH_WIN" "$LAYOUT"
-tmux set-option -wt "$DASH_WIN" @openclaw-dashboard-layout "$LAYOUT"
+tmux set-option -wt "$DASH_WIN" @tmuxagents-dashboard-layout "$LAYOUT"

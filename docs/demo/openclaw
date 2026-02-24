@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Mock openclaw CLI for VHS demo recording
+
+if [ "$1" = "sessions" ] && [ "$2" = "--json" ]; then
+  echo '{"sessions":[]}'
+  exit 0
+fi
+
+if [ "$1" = "tui" ]; then
+  SESSION="${3:-demo}"
+  clear
+  printf '\n  \033[36mOpenClaw\033[0m · \033[1m%s\033[0m\n' "$SESSION"
+  printf '  \033[90m─────────────────────────────────────\033[0m\n\n'
+  printf '  \033[90mConnected · Waiting for input...\033[0m\n\n  > '
+  cat  # block until killed
+fi

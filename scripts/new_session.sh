@@ -4,7 +4,7 @@
 # Opens openclaw tui in a new pane or window.
 # mode: pane | window
 
-SESSION_NAME="${1:-claw}"
+SESSION_NAME="${1:-agent}"
 MODE="${2:-pane}"
 
 # Strip whitespace
@@ -21,7 +21,7 @@ if [ "$MODE" = "window" ]; then
   tmux new-window -n "$SESSION_NAME" "$CMD"
 else
   # Respect user split direction preference (h=horizontal[default], v=vertical)
-  split_dir=$(tmux show-option -gqv "@openclaw-split-direction")
+  split_dir=$(tmux show-option -gqv "@tmuxagents-split-direction")
   split_dir="${split_dir:-h}"
 
   if [ "$split_dir" = "v" ]; then

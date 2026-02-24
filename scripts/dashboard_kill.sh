@@ -2,7 +2,7 @@
 #
 # dashboard_kill.sh — kill the dashboard window
 
-DASH_WIN=$(tmux list-windows -F "#{window_id} #{@openclaw-dashboard}" 2>/dev/null \
+DASH_WIN=$(tmux list-windows -F "#{window_id} #{@tmuxagents-dashboard}" 2>/dev/null \
   | awk '$2=="1" {print $1}' | head -1)
 
 if [ -z "$DASH_WIN" ]; then
