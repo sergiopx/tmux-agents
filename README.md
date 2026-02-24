@@ -14,7 +14,6 @@ Open new panes or windows pre-loaded with an OpenClaw session. Attach to existin
 | `N` | New OpenClaw session → open in **window** |
 | `a` | Attach existing session → open in **pane** |
 | `A` | Attach existing session → open in **window** |
-| `l` | List all OpenClaw sessions (popup) |
 | `Esc` | Cancel |
 
 ## Install
@@ -58,8 +57,6 @@ set -g @openclaw-split-direction "h"
 
 - `n` / `N` — prompts for a session name (default: `claw-1`, `claw-2`, …), then opens `openclaw tui --session <name>` in a new pane or window. The pane title is set to match the session name.
 - `a` / `A` — fetches your OpenClaw sessions via `openclaw sessions --json`, presents them in an fzf popup (or `display-menu` if fzf isn't installed), and opens the selected session in a new pane or window.
-- `l` — shows all sessions with last-updated time and token usage.
-
 ## License
 
 MIT
