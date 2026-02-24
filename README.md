@@ -10,6 +10,7 @@ Open new panes or windows pre-loaded with an OpenClaw session. Attach to existin
 
 | Key | Action |
 |-----|--------|
+| `g` | Switch **current pane** to existing session (fzf picker) |
 | `n` | New OpenClaw session → open in **pane** (split) |
 | `N` | New OpenClaw session → open in **window** |
 | `a` | Attach existing session → open in **pane** |
@@ -56,6 +57,7 @@ set -g @openclaw-split-direction "h"
 ## How It Works
 
 - `n` / `N` — prompts for a session name (default: `claw-1`, `claw-2`, …), then opens `openclaw tui --session <name>` in a new pane or window. The pane title is set to match the session name.
+- `g` — fzf picker → **respawns the current pane** with the selected session (replaces whatever was running in-place).
 - `a` / `A` — fetches your OpenClaw sessions via `openclaw sessions --json`, presents them in an fzf popup (or `display-menu` if fzf isn't installed), and opens the selected session in a new pane or window.
 ## License
 
