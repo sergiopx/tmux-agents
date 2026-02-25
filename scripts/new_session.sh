@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 #
 # new_session.sh <session-name> <mode>
-# Opens openclaw tui in a new pane or window.
+# Opens a CLI session in a new pane or window.
 # mode: pane | window
+
+SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "$SCRIPTS_DIR/cli_adapter.sh"
 
 SESSION_NAME="${1:-agent}"
 MODE="${2:-pane}"
@@ -15,7 +18,7 @@ if [ -z "$SESSION_NAME" ]; then
   exit 1
 fi
 
-CMD="openclaw tui --session '$SESSION_NAME'"
+CMD=$(agents_new_cmd "$SESSION_NAME")
 
 if [ "$MODE" = "window" ]; then
   tmux new-window -n "$SESSION_NAME" "$CMD"
