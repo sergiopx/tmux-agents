@@ -22,6 +22,7 @@ A [TPM](https://github.com/tmux-plugins/tpm) plugin for managing AI agent CLI se
 | `r` | **Rotate panes forward** (content moves, focus stays) |
 | `R` | **Rotate panes backward** (content moves, focus stays) |
 | `o` | **Cycle focus** to next pane |
+| `t` | **Toggle dim** — dim inactive panes (highlight focused pane) |
 | `Esc` | Cancel |
 
 > **Tip:** While in the dashboard window, press `prefix + Space` to cycle tmux's built-in layouts.
@@ -45,6 +46,12 @@ A [TPM](https://github.com/tmux-plugins/tpm) plugin for managing AI agent CLI se
 | Kill dashboard | `x` | Close the dashboard window |
 
 Hidden sessions are saved to `~/.config/tmux-agents/hidden` and persist across restarts.
+
+### Pane Dimming (`prefix g t`)
+
+Toggle dim mode to visually highlight the focused pane. Inactive panes get dimmed text (`colour245`) while the active pane stays bright (`colour255`).
+
+> **Note:** Dimming uses tmux's global `window-style` / `window-active-style` options, so it affects all panes across all windows — not just the dashboard. Toggle off to restore defaults.
 
 ## Install
 

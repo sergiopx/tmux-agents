@@ -32,6 +32,7 @@ tmux bind-key -T agents D run-shell "$CURRENT_DIR/scripts/dashboard_menu.sh"
 tmux bind-key -T agents r swap-pane -D -d
 tmux bind-key -T agents R swap-pane -U -d
 tmux bind-key -T agents o select-pane -t :.+
+tmux bind-key -T agents t run-shell "$CURRENT_DIR/scripts/dashboard_dim.sh"
 
 # Escape [agents] table without doing anything
 tmux bind-key -T agents Escape switch-client -T root
