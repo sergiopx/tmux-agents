@@ -1,0 +1,5 @@
+{
+  "pid": 56156,
+  "started": "2026-02-25T11:57:17.017200Z",
+  "prompt": "Fix issue #2: Restructure keybindings in tmux-agents.tmux. Current bindings use prefix+g then single..."
+}
