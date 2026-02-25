@@ -31,8 +31,8 @@ tmux bind-key -T agents a run-shell "$CURRENT_DIR/scripts/switch_session.sh"
 tmux bind-key -T agents A run-shell "$CURRENT_DIR/scripts/prompt_new_session.sh current"
 tmux bind-key -T agents d run-shell "$CURRENT_DIR/scripts/dashboard.sh"
 tmux bind-key -T agents D run-shell "$CURRENT_DIR/scripts/dashboard_menu.sh"
-tmux bind-key -T agents r swap-pane -D -d
-tmux bind-key -T agents R swap-pane -U -d
+tmux bind-key -T agents r run-shell "$CURRENT_DIR/scripts/rotate_panes.sh forward"
+tmux bind-key -T agents R run-shell "$CURRENT_DIR/scripts/rotate_panes.sh backward"
 tmux bind-key -T agents o select-pane -t :.+
 tmux bind-key -T agents t run-shell "$CURRENT_DIR/scripts/dashboard_dim.sh"
 
