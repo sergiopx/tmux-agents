@@ -31,5 +31,14 @@ else
 fi
 
 if [ -n "$SELECTED" ]; then
-  bash "$SCRIPTS_DIR/new_session.sh" "$SELECTED" "$MODE"
+  # Check if the session actually exists
+  if bash "$SCRIPTS_DIR/get_sessions.sh" | grep -qx "$SELECTED"; then
+    bash "$SCRIPTS_DIR/new_session.sh" "$SELECTED" "$MODE"
+  else
+    # Session not found — offer to create it
+    tmux display-menu -T "#[fg=yellow]Session '${SELECTED}' not found" \
+      "Create it" "y" "run-shell 'bash \"$SCRIPTS_DIR/new_session.sh\" \"$SELECTED\" \"$MODE\"'" \
+      "" \
+      "Cancel" "n" ""
+  fi
 fi

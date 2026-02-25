@@ -15,8 +15,8 @@ A [TPM](https://github.com/tmux-plugins/tpm) plugin for managing AI agent CLI se
 | `g` | Switch **current pane** to existing session (fzf, respawn in-place) |
 | `n` | New session → prompt for name → open in **pane** (split) |
 | `N` | New session → prompt for name → open in **window** |
-| `a` | Attach existing session → fzf picker → open in **pane** |
-| `A` | Attach existing session → fzf picker → open in **window** |
+| `a` | Attach session → fzf picker → open in **pane** (offers to create if not found) |
+| `A` | Attach session → fzf picker → open in **window** (offers to create if not found) |
 | `d` | **Dashboard** — switch to it (create if not exists) |
 | `D` | **Dashboard menu** — hide/show/refresh/relayout/kill |
 | `Esc` | Cancel |
