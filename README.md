@@ -19,6 +19,9 @@ A [TPM](https://github.com/tmux-plugins/tpm) plugin for managing AI agent CLI se
 | `A` | Attach session → fzf picker → open in **window** (offers to create if not found) |
 | `d` | **Dashboard** — switch to it (create if not exists) |
 | `D` | **Dashboard menu** — hide/show/refresh/relayout/kill |
+| `r` | **Rotate panes forward** (content moves, focus stays) |
+| `R` | **Rotate panes backward** (content moves, focus stays) |
+| `o` | **Cycle focus** to next pane |
 | `Esc` | Cancel |
 
 > **Tip:** While in the dashboard window, press `prefix + Space` to cycle tmux's built-in layouts.

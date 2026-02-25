@@ -29,6 +29,9 @@ tmux bind-key -T agents a run-shell "$CURRENT_DIR/scripts/attach_session.sh pane
 tmux bind-key -T agents A run-shell "$CURRENT_DIR/scripts/attach_session.sh window"
 tmux bind-key -T agents d run-shell "$CURRENT_DIR/scripts/dashboard.sh"
 tmux bind-key -T agents D run-shell "$CURRENT_DIR/scripts/dashboard_menu.sh"
+tmux bind-key -T agents r swap-pane -D -d
+tmux bind-key -T agents R swap-pane -U -d
+tmux bind-key -T agents o select-pane -t :.+
 
 # Escape [agents] table without doing anything
 tmux bind-key -T agents Escape switch-client -T root
