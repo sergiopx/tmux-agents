@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
 # prompt_new_session.sh <mode>
-# Prompts for a session name then opens a new pane/window.
-# mode: pane | window
+# Prompts for a session name then opens a new pane/window/current pane.
+# mode: pane | window | current
 
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 MODE="${1:-pane}"
