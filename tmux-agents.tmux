@@ -6,27 +6,29 @@
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# Configurable trigger key (default: g)
+# Configurable trigger key (default: a)
 trigger_key=$(tmux show-option -gqv "@tmuxagents-trigger-key")
-trigger_key="${trigger_key:-g}"
+trigger_key="${trigger_key:-a}"
 
 # Register trigger: prefix + <trigger_key> → enter [agents] key table
 tmux bind-key -T prefix "$trigger_key" switch-client -T agents
 
 # ── [agents] key table ──────────────────────────────────────────────────────────
-# g  →  fzf: switch CURRENT PANE to existing session (respawn in-place)
-# n  →  new OpenClaw session in a new PANE (prompt for name)
-# N  →  new OpenClaw session in a new WINDOW (prompt for name)
-# a  →  attach existing session → picker → open in PANE
-# A  →  attach existing session → picker → open in WINDOW
+# p  →  attach existing session → picker → open in PANE
+# P  →  new session in a new PANE (prompt for name)
+# w  →  attach existing session → picker → open in WINDOW
+# W  →  new session in a new WINDOW (prompt for name)
+# a  →  fzf: switch CURRENT PANE to existing session (respawn in-place)
+# A  →  new session in CURRENT PANE (prompt for name, respawn in-place)
 # d  →  dashboard: switch to it (create if not exists)
 # D  →  dashboard menu: hide/show/refresh/relayout/kill
 
-tmux bind-key -T agents g run-shell "$CURRENT_DIR/scripts/switch_session.sh"
-tmux bind-key -T agents n run-shell "$CURRENT_DIR/scripts/prompt_new_session.sh pane"
-tmux bind-key -T agents N run-shell "$CURRENT_DIR/scripts/prompt_new_session.sh window"
-tmux bind-key -T agents a run-shell "$CURRENT_DIR/scripts/attach_session.sh pane"
-tmux bind-key -T agents A run-shell "$CURRENT_DIR/scripts/attach_session.sh window"
+tmux bind-key -T agents p run-shell "$CURRENT_DIR/scripts/attach_session.sh pane"
+tmux bind-key -T agents P run-shell "$CURRENT_DIR/scripts/prompt_new_session.sh pane"
+tmux bind-key -T agents w run-shell "$CURRENT_DIR/scripts/attach_session.sh window"
+tmux bind-key -T agents W run-shell "$CURRENT_DIR/scripts/prompt_new_session.sh window"
+tmux bind-key -T agents a run-shell "$CURRENT_DIR/scripts/switch_session.sh"
+tmux bind-key -T agents A run-shell "$CURRENT_DIR/scripts/prompt_new_session.sh current"
 tmux bind-key -T agents d run-shell "$CURRENT_DIR/scripts/dashboard.sh"
 tmux bind-key -T agents D run-shell "$CURRENT_DIR/scripts/dashboard_menu.sh"
 tmux bind-key -T agents r swap-pane -D -d

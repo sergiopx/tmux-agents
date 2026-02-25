@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
 # new_session.sh <session-name> <mode>
-# Opens openclaw tui in a new pane or window.
-# mode: pane | window
+# Opens openclaw tui in a new pane, window, or current pane.
+# mode: pane | window | current
 
 SESSION_NAME="${1:-agent}"
 MODE="${2:-pane}"
@@ -19,6 +19,9 @@ CMD="openclaw tui --session '$SESSION_NAME'"
 
 if [ "$MODE" = "window" ]; then
   tmux new-window -n "$SESSION_NAME" "$CMD"
+elif [ "$MODE" = "current" ]; then
+  tmux respawn-pane -k "$CMD"
+  tmux select-pane -T "$SESSION_NAME"
 else
   # Respect user split direction preference (h=horizontal[default], v=vertical)
   split_dir=$(tmux show-option -gqv "@tmuxagents-split-direction")
