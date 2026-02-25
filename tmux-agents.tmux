@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# tmux-agents — tmux plugin for OpenClaw session management
+# tmux-agents — tmux plugin for AI CLI session management
 # https://github.com/sergiopx/tmux-agents
 #
 
@@ -14,10 +14,10 @@ trigger_key="${trigger_key:-a}"
 tmux bind-key -T prefix "$trigger_key" switch-client -T agents
 
 # ── [agents] key table ──────────────────────────────────────────────────────────
-# p  →  attach existing session → picker → open in PANE
-# P  →  new session in a new PANE (prompt for name)
-# w  →  attach existing session → picker → open in WINDOW
-# W  →  new session in a new WINDOW (prompt for name)
+# p  →  attach existing session → picker → open in PANE (offers to create if not found)
+# P  →  new session in a new PANE (prompt for name if supported)
+# w  →  attach existing session → picker → open in WINDOW (offers to create if not found)
+# W  →  new session in a new WINDOW (prompt for name if supported)
 # a  →  fzf: switch CURRENT PANE to existing session (respawn in-place)
 # A  →  new session in CURRENT PANE (prompt for name, respawn in-place)
 # d  →  dashboard: switch to it (create if not exists)

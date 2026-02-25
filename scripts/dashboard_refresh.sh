@@ -4,6 +4,7 @@
 # Additive + subtractive: adds new sessions, removes hidden/deleted ones.
 
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "$SCRIPTS_DIR/cli_adapter.sh"
 
 DASH_WIN=$(tmux list-windows -F "#{window_id} #{@tmuxagents-dashboard}" 2>/dev/null \
   | awk '$2=="1" {print $1}' | head -1)
@@ -41,7 +42,7 @@ done
 for session in "${VISIBLE[@]}"; do
   if [ -z "${SESSION_TO_PANE[$session]}" ]; then
     NEW_PANE=$(tmux split-window -t "$DASH_WIN" -d -P -F "#{pane_id}")
-    tmux respawn-pane -k -t "$NEW_PANE" "openclaw tui --session '$session'"
+    tmux respawn-pane -k -t "$NEW_PANE" "$(agents_open_cmd "$session")"
     tmux set-option -pt "$NEW_PANE" @tmuxagents-session "$session"
     tmux select-pane -T "$session" -t "$NEW_PANE"
   fi

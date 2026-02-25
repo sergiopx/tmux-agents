@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 #
 # switch_session.sh
-# Picks an existing OpenClaw session via fzf and respawns the CURRENT pane with it.
-# Popup opens immediately; openclaw fetch happens inside it (no pre-popup delay).
+# Picks an existing session via fzf and respawns the CURRENT pane with it.
+# Popup opens immediately; session fetch happens inside it (no pre-popup delay).
 
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "$SCRIPTS_DIR/cli_adapter.sh"
+
+CLI_DISPLAY=$(agents_cli_display_name)
 
 if command -v fzf >/dev/null 2>&1; then
   TMPFILE=$(mktemp /tmp/tmux-agents.XXXXXX)
@@ -16,7 +19,7 @@ else
   # Fallback: build menu from pre-fetched list
   SESSION_NAMES=$(bash "$SCRIPTS_DIR/get_sessions.sh")
   if [ -z "$SESSION_NAMES" ]; then
-    tmux display-message "tmux-agents: no OpenClaw sessions found"
+    tmux display-message "tmux-agents: no $CLI_DISPLAY sessions found"
     exit 1
   fi
   MENU_ARGS=("-T" "#[fg=cyan]Switch Session")
@@ -29,6 +32,7 @@ else
 fi
 
 if [ -n "$SELECTED" ]; then
-  tmux respawn-pane -k "openclaw tui --session '$SELECTED'"
+  CMD=$(agents_open_cmd "$SELECTED")
+  tmux respawn-pane -k "$CMD"
   tmux select-pane -T "$SELECTED"
 fi

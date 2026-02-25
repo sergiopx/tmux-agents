@@ -1,8 +1,8 @@
 # Loop Summary
 
 **Status:** Completed successfully
-**Iterations:** 3
-**Duration:** 5m 6s
+**Iterations:** 6
+**Duration:** 12m 5s
 
 ## Tasks
 
@@ -14,4 +14,4 @@ _No events recorded._
 
 ## Final Commit
 
-b5cba0f: docs: update README for new keybinding layout
+72519e4: docs: add CLI Support section to README with feature matrix for all 5 CLIs

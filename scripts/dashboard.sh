@@ -3,6 +3,7 @@
 # dashboard.sh — go to dashboard (create if not exists, switch if exists)
 
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "$SCRIPTS_DIR/cli_adapter.sh"
 
 # ── Detect existing dashboard in current session ─────────────────────────────
 DASH_WIN=$(tmux list-windows -F "#{window_id} #{@tmuxagents-dashboard}" 2>/dev/null \
@@ -52,11 +53,11 @@ tmux select-layout -t "$DASH_WIN" "$DEFAULT_LAYOUT"
 tmux set-option -wt "$DASH_WIN" @tmuxagents-dashboard 1
 tmux set-option -wt "$DASH_WIN" @tmuxagents-dashboard-layout "$DEFAULT_LAYOUT"
 
-# Respawn each pane with openclaw (all load in parallel)
+# Respawn each pane with the configured CLI (all load in parallel)
 for (( i=0; i<COUNT; i++ )); do
   session="${SESSIONS[$i]}"
   pane="${PANE_IDS[$i]}"
-  tmux respawn-pane -k -t "$pane" "openclaw tui --session '$session'"
+  tmux respawn-pane -k -t "$pane" "$(agents_open_cmd "$session")"
   tmux set-option -pt "$pane" @tmuxagents-session "$session"
   tmux select-pane -T "$session" -t "$pane"
 done
