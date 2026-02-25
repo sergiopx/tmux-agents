@@ -8,15 +8,16 @@ A [TPM](https://github.com/tmux-plugins/tpm) plugin for managing AI agent CLI se
 
 ## Keybindings
 
-`prefix + g` enters the **[agents]** key table:
+`prefix + a` enters the **[agents]** key table:
 
 | Key | Action |
 |-----|--------|
-| `g` | Switch **current pane** to existing session (fzf, respawn in-place) |
-| `n` | New session → prompt for name → open in **pane** (split) |
-| `N` | New session → prompt for name → open in **window** |
-| `a` | Attach existing session → fzf picker → open in **pane** |
-| `A` | Attach existing session → fzf picker → open in **window** |
+| `p` | Attach existing session → fzf picker → open in **pane** |
+| `P` | New session → prompt for name → open in **pane** (split) |
+| `w` | Attach existing session → fzf picker → open in **window** |
+| `W` | New session → prompt for name → open in **window** |
+| `a` | Switch **current pane** to existing session (fzf, respawn in-place) |
+| `A` | New session → prompt for name → respawn **current pane** in-place |
 | `d` | **Dashboard** — switch to it (create if not exists) |
 | `D` | **Dashboard menu** — hide/show/refresh/relayout/kill |
 | `Esc` | Cancel |
@@ -25,11 +26,11 @@ A [TPM](https://github.com/tmux-plugins/tpm) plugin for managing AI agent CLI se
 
 ## Dashboard
 
-`prefix g d` opens a persistent window (`agents:dash`) showing all your sessions in a tiled grid. Each pane runs a live agent session. Created once, reused forever — pressing `prefix g d` again just switches to it.
+`prefix a d` opens a persistent window (`agents:dash`) showing all your sessions in a tiled grid. Each pane runs a live agent session. Created once, reused forever — pressing `prefix a d` again just switches to it.
 
 <!-- GIF: menu -->
 
-### Dashboard Menu (`prefix g D`)
+### Dashboard Menu (`prefix a D`)
 
 | Option | Key | Action |
 |--------|-----|--------|
@@ -71,7 +72,7 @@ git clone https://github.com/sergiopx/tmux-agents ~/.tmux/plugins/tmux-agents
 ## Configuration
 
 ```tmux
-set -g @tmuxagents-trigger-key       "g"       # trigger key after prefix (default: g)
+set -g @tmuxagents-trigger-key       "a"       # trigger key after prefix (default: a)
 set -g @tmuxagents-split-direction   "h"       # pane split direction: h or v
 set -g @tmuxagents-dashboard-layout  "tiled"   # tiled | even-vertical | even-horizontal
 set -g @tmuxagents-dashboard-max     "0"       # max panes in dashboard (0 = no limit)
