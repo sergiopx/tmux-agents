@@ -55,9 +55,9 @@ tmux set-option -wt "$DASH_WIN" @tmuxagents-dashboard-layout "$DEFAULT_LAYOUT"
 
 # Respawn each pane with the configured CLI (all load in parallel)
 for (( i=0; i<COUNT; i++ )); do
-  session="${SESSIONS[$i]}"
+  IFS=$'\t' read -r session label _ <<< "${SESSIONS[$i]}"
   pane="${PANE_IDS[$i]}"
   tmux respawn-pane -k -t "$pane" "$(agents_open_cmd "$session")"
   tmux set-option -pt "$pane" @tmuxagents-session "$session"
-  tmux select-pane -T "$session" -t "$pane"
+  tmux select-pane -T "${label:-$session}" -t "$pane"
 done

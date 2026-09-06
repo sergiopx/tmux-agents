@@ -14,8 +14,14 @@ if [ -z "$DASH_WIN" ]; then
   exit 1
 fi
 
-# Get target sessions
-mapfile -t VISIBLE < <(bash "$SCRIPTS_DIR/get_visible_sessions.sh")
+# Get target sessions: id → label
+declare -A VISIBLE_LABEL
+VISIBLE=()
+while IFS=$'\t' read -r id label _; do
+  [ -z "$id" ] && continue
+  VISIBLE+=("$id")
+  VISIBLE_LABEL["$id"]="${label:-$id}"
+done < <(bash "$SCRIPTS_DIR/get_visible_sessions.sh")
 
 # Get current pane → session mapping (via @tmuxagents-session pane option)
 declare -A SESSION_TO_PANE
@@ -44,7 +50,7 @@ for session in "${VISIBLE[@]}"; do
     NEW_PANE=$(tmux split-window -t "$DASH_WIN" -d -P -F "#{pane_id}")
     tmux respawn-pane -k -t "$NEW_PANE" "$(agents_open_cmd "$session")"
     tmux set-option -pt "$NEW_PANE" @tmuxagents-session "$session"
-    tmux select-pane -T "$session" -t "$NEW_PANE"
+    tmux select-pane -T "${VISIBLE_LABEL[$session]}" -t "$NEW_PANE"
   fi
 done
 

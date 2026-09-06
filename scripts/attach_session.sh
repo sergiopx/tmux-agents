@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # attach_session.sh <mode>
-# Picks an existing session via fzf and opens it in a new pane or window.
+# Picks an existing session via fzf and resumes it in a new pane or window.
 # Popup opens immediately; session fetch happens inside it (no pre-popup delay).
 # mode: pane | window
 
@@ -12,35 +12,36 @@ CLI_DISPLAY=$(agents_cli_display_name)
 
 if command -v fzf >/dev/null 2>&1; then
   TMPFILE=$(mktemp /tmp/tmux-agents.XXXXXX)
-  tmux display-popup -E \
-    "bash '$SCRIPTS_DIR/get_sessions.sh' | fzf --prompt='Attach › ' --border --height=40% > '$TMPFILE'"
-  SELECTED=$(cat "$TMPFILE" 2>/dev/null | xargs)
+  # --print-query: first line is what was typed, second (if any) the chosen row.
+  # Lets the user type a new name and create it when nothing matches.
+  tmux display-popup -E -w 80% -h 60% \
+    "bash '$SCRIPTS_DIR/get_sessions.sh' | fzf $AGENTS_FZF_OPTS --print-query --prompt='Attach › ' --border > '$TMPFILE'"
+  QUERY=$(sed -n 1p "$TMPFILE" 2>/dev/null | xargs)
+  SELECTED=$(sed -n 2p "$TMPFILE" 2>/dev/null | cut -f1 | xargs)
   rm -f "$TMPFILE"
 else
   # Fallback: build menu from pre-fetched list
-  SESSION_NAMES=$(bash "$SCRIPTS_DIR/get_sessions.sh")
-  if [ -z "$SESSION_NAMES" ]; then
+  SESSION_LINES=$(bash "$SCRIPTS_DIR/get_sessions.sh")
+  if [ -z "$SESSION_LINES" ]; then
     tmux display-message "tmux-agents: no $CLI_DISPLAY sessions found"
     exit 1
   fi
   MENU_ARGS=("-T" "#[fg=cyan]$CLI_DISPLAY Sessions")
-  while IFS= read -r name; do
-    [ -z "$name" ] && continue
-    MENU_ARGS+=("$name" "" "run-shell '$SCRIPTS_DIR/open_session.sh $name $MODE'")
-  done <<< "$SESSION_NAMES"
+  while IFS=$'\t' read -r id label _; do
+    [ -z "$id" ] && continue
+    MENU_ARGS+=("${label:-$id}" "" "run-shell '$SCRIPTS_DIR/open_session.sh $id $MODE'")
+  done <<< "$SESSION_LINES"
   tmux display-menu "${MENU_ARGS[@]}"
   exit 0
 fi
 
 if [ -n "$SELECTED" ]; then
-  # Check if the session actually exists
-  if bash "$SCRIPTS_DIR/get_sessions.sh" | grep -qx "$SELECTED"; then
-    bash "$SCRIPTS_DIR/new_session.sh" "$SELECTED" "$MODE"
-  else
-    # Session not found — offer to create it
-    tmux display-menu -T "#[fg=yellow]Session '${SELECTED}' not found" \
-      "Create it" "y" "run-shell 'bash \"$SCRIPTS_DIR/new_session.sh\" \"$SELECTED\" \"$MODE\"'" \
-      "" \
-      "Cancel" "n" ""
-  fi
+  # Existing session → resume it
+  bash "$SCRIPTS_DIR/open_session.sh" "$SELECTED" "$MODE"
+elif [ -n "$QUERY" ]; then
+  # Nothing matched what was typed → offer to create a new session with that name
+  tmux display-menu -T "#[fg=yellow]No session matches '${QUERY}'" \
+    "Create new session" "y" "run-shell 'bash \"$SCRIPTS_DIR/new_session.sh\" \"$QUERY\" \"$MODE\"'" \
+    "" \
+    "Cancel" "n" ""
 fi

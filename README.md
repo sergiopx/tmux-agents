@@ -2,7 +2,7 @@
 
 Manage your AI agent sessions in tmux — open, attach, switch, and dashboard.
 
-A [TPM](https://github.com/tmux-plugins/tpm) plugin for managing AI agent CLI sessions directly from tmux. Supports [OpenClaw](https://openclaw.ai), [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [OpenCode](https://opencode.ai), [Codex](https://github.com/openai/codex), and [Gemini CLI](https://github.com/google-gemini/gemini-cli). Open new panes or windows pre-loaded with a session, attach to existing ones with a fuzzy picker, and keep a persistent dashboard showing all your agents at once.
+A [TPM](https://github.com/tmux-plugins/tpm) plugin for managing AI agent CLI sessions directly from tmux. Built around [Claude Code](https://docs.anthropic.com/en/docs/claude-code), with adapters for [OpenCode](https://opencode.ai), [Codex](https://github.com/openai/codex), [Gemini CLI](https://github.com/google-gemini/gemini-cli), and [OpenClaw](https://openclaw.ai). Open new panes or windows pre-loaded with a session, resume existing ones with a fuzzy picker that shows real titles, and keep a persistent dashboard showing all your agents at once.
 
 <!-- GIF: dashboard -->
 
@@ -12,9 +12,9 @@ A [TPM](https://github.com/tmux-plugins/tpm) plugin for managing AI agent CLI se
 
 | Key | Action |
 |-----|--------|
-| `p` | Attach session → fzf picker → open in **pane** (offers to create if not found) |
+| `p` | Resume session → fzf picker → open in **pane** (offers to create if nothing matches) |
 | `P` | New session → prompt for name → open in **pane** (split) |
-| `w` | Attach session → fzf picker → open in **window** (offers to create if not found) |
+| `w` | Resume session → fzf picker → open in **window** (offers to create if nothing matches) |
 | `W` | New session → prompt for name → open in **window** |
 | `a` | Switch **current pane** to existing session (fzf, respawn in-place) |
 | `A` | New session → prompt for name → respawn **current pane** in-place |
@@ -27,6 +27,20 @@ A [TPM](https://github.com/tmux-plugins/tpm) plugin for managing AI agent CLI se
 | `Esc` | Cancel |
 
 > **Tip:** While in the dashboard window, press `prefix + Space` to cycle tmux's built-in layouts.
+
+## Session picker
+
+`prefix a p` / `w` / `a` open an fzf popup listing your sessions. For Claude Code the list covers **every project**, newest first, and each row shows the session title, how long ago it was active, and the project (with git branch):
+
+```
+Project revival            now   tmux-agents [main]
+debug-empty-state-ui-bugs  27m   disques
+Idle Farm Unity scaffold   2h    infinitesnake
+```
+
+The title is the name you gave with `/rename` or `claude --name`, else the title Claude generated, else your first prompt. Picking a row resumes the session **in its own project directory**. Typing a name that matches nothing offers to create a new session.
+
+Session metadata is scanned from `~/.claude/projects` and cached in `~/.cache/tmux-agents/claude` keyed by file mtime, so only changed transcripts are re-read.
 
 ## Dashboard
 
@@ -71,17 +85,19 @@ git clone https://github.com/sergiopx/tmux-agents ~/.tmux/plugins/tmux-agents
 ## Requirements
 
 - At least one supported AI CLI (see [CLI Support](#cli-support) below)
-- [`jq`](https://stedolan.github.io/jq/) *(required for OpenClaw session listing)*
+- [`jq`](https://stedolan.github.io/jq/) *(required for Claude Code and OpenClaw session listing)*
 - [`fzf`](https://github.com/junegunn/fzf) *(optional — falls back to `display-menu`)*
 
 ## Configuration
 
 ```tmux
-set -g @tmuxagents-cli               "openclaw"  # AI CLI to use (see CLI Support below)
+set -g @tmuxagents-cli               "claude"    # AI CLI to use (see CLI Support below)
 set -g @tmuxagents-trigger-key       "a"         # trigger key after prefix (default: a)
 set -g @tmuxagents-split-direction   "h"         # pane split direction: h or v
 set -g @tmuxagents-dashboard-layout  "tiled"     # tiled | even-vertical | even-horizontal
 set -g @tmuxagents-dashboard-max     "0"         # max panes in dashboard (0 = no limit)
+set -g @tmuxagents-claude-scope      "all"       # claude picker: all projects | project (current dir only)
+set -g @tmuxagents-claude-limit      "50"        # claude picker: max sessions listed (0 = no limit)
 ```
 
 ## CLI Support
@@ -90,8 +106,8 @@ Set `@tmuxagents-cli` to one of the supported values below:
 
 | CLI | Value | List sessions | Resume session | Named sessions | New session |
 |-----|-------|:---:|:---:|:---:|:---:|
-| [OpenClaw](https://openclaw.ai) | `openclaw` (default) | Yes | Yes | Yes | Yes |
-| [Claude Code](https://docs.anthropic.com/en/docs/claude-code) | `claude` | Yes* | Yes | No | Yes |
+| [Claude Code](https://docs.anthropic.com/en/docs/claude-code) | `claude` (default) | Yes* | Yes | No | Yes |
+| [OpenClaw](https://openclaw.ai) | `openclaw` | Yes | Yes | Yes | Yes |
 | [OpenCode](https://opencode.ai) | `opencode` | Yes | Yes | No | Yes |
 | [Codex](https://github.com/openai/codex) | `codex` | Yes* | Yes | No | Yes |
 | [Gemini CLI](https://github.com/google-gemini/gemini-cli) | `gemini` | Yes | Yes | No | Yes |
@@ -105,8 +121,8 @@ Set `@tmuxagents-cli` to one of the supported values below:
 
 ### CLI-specific details
 
+- **Claude Code** — Sessions discovered from `~/.claude/projects/` across all projects, with titles (see [Session picker](#session-picker)). Resumed with `claude --resume <id>` from the session's project directory. Requires `jq`.
 - **OpenClaw** — Sessions listed via `openclaw sessions --json`. Requires `jq`.
-- **Claude Code** — Sessions discovered from `~/.claude/projects/` by scanning `.jsonl` files. Session IDs are UUIDs.
 - **OpenCode** — Sessions listed via `opencode session list`. Resumed with `--session <id>`.
 - **Codex** — Sessions discovered from `~/.codex/sessions/` by scanning `rollout-*.jsonl` files. Shows the 20 most recent.
 - **Gemini** — Sessions listed via `gemini --list-sessions`. Resumed by index with `--resume <index>`.

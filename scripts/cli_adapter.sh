@@ -4,18 +4,39 @@
 # Provides functions to list/open/create sessions across multiple AI CLIs.
 # Source this file from other scripts: source "$SCRIPTS_DIR/cli_adapter.sh"
 #
-# Supported CLIs: openclaw, claude, opencode, codex, gemini
+# Supported CLIs: claude (default), openclaw, opencode, codex, gemini
+#
+# Session list format (agents_list_sessions): one line per session,
+#   <id> <TAB> <label> [<TAB> extra columns...]
+# Column 1 is what scripts act on; columns 2+ are what the picker shows.
+# Use $AGENTS_FZF_OPTS with fzf to display only the label columns.
+
+ADAPTER_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+AGENTS_FZF_OPTS="--delimiter='\\t' --with-nth=2.. --tabstop=4 --no-hscroll"
 
 # ── Resolve configured CLI ──────────────────────────────────────────────────────
 agents_cli_name() {
   local cli
   cli=$(tmux show-option -gqv "@tmuxagents-cli" 2>/dev/null)
-  echo "${cli:-openclaw}"
+  echo "${cli:-claude}"
 }
 
 # ── List sessions (one per line) ────────────────────────────────────────────────
 # Output: session identifiers, one per line. Format varies by CLI.
 agents_list_sessions() {
+  local cli
+  cli=$(agents_cli_name)
+
+  if [ "$cli" = "claude" ]; then
+    bash "$ADAPTER_DIR/claude_sessions.sh"
+    return
+  fi
+
+  # Other CLIs: plain identifiers → label is the identifier itself
+  agents_list_raw_ids | awk -F'\t' 'NF { print $1 "\t" $1 }'
+}
+
+agents_list_raw_ids() {
   local cli
   cli=$(agents_cli_name)
 
@@ -26,15 +47,8 @@ agents_list_sessions() {
       ;;
 
     claude)
-      # Claude stores sessions as <uuid>.jsonl in the project directory.
-      # Derive the project hash the same way Claude does (resolved path with / → -).
-      local project_dir
-      project_dir=$(pwd -P | sed 's|/|-|g')
-      local sessions_path="$HOME/.claude/projects/${project_dir}"
-      if [ -d "$sessions_path" ]; then
-        find "$sessions_path" -maxdepth 1 -name '*.jsonl' -exec basename {} .jsonl \; \
-          | sort -r
-      fi
+      # id, title, relative time, project — scanned from transcripts, cached by mtime
+      bash "$ADAPTER_DIR/claude_sessions.sh"
       ;;
 
     opencode)
@@ -87,7 +101,15 @@ agents_open_cmd() {
       echo "openclaw tui --session '$session'"
       ;;
     claude)
-      echo "claude --resume '$session'"
+      # Resume from the session's own project directory so Claude finds it
+      # and relative paths in the conversation still make sense.
+      local cwd
+      cwd=$(bash "$ADAPTER_DIR/claude_sessions.sh" cwd "$session")
+      if [ -n "$cwd" ] && [ -d "$cwd" ]; then
+        echo "cd '$cwd' && claude --resume '$session'"
+      else
+        echo "claude --resume '$session'"
+      fi
       ;;
     opencode)
       echo "opencode --session '$session'"
@@ -205,4 +227,12 @@ agents_supports_named_sessions() {
     openclaw) return 0 ;;
     *) return 1 ;;
   esac
+}
+
+# ── Label for a session id (for pane titles / messages) ─────────────────────────
+# Usage: agents_session_label <id>
+agents_session_label() {
+  local id="$1" label
+  label=$(agents_list_sessions | awk -F'\t' -v id="$id" '$1 == id { print $2; exit }')
+  echo "${label:-$id}"
 }
